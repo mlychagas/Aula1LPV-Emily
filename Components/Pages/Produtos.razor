@@ -4,71 +4,25 @@
 <h2>Produtos</h2>
 <div class="row">
     <div class="col-md-4">
-        <EditForm Model="novoProduto" OnValidSubmit="AdicionarProdutos" class="card-body">
-            <DataAnnotationsValidator />
-            <div class="mb-3">
-                <label class="form-label">Nome:</label>
-                <InputText class="form-control" @bind-Value="novoProduto.Nome" />
-                <ValidationMessage For="() => novoProduto.Nome" />
-            </div>
-            <div>
-                <label class="form-label">Preço:</label>
-                <InputNumber class="form-control" @bind-Value="novoProduto.Preco" />
-                <ValidationMessage For="() => novoProduto.Preco" />
-            </div>
-            <div>
-                <label class ="form-label">Quantidade:</label>
-                <InputNumber class="form-control" @bind-Value="novoProduto.Quantidade" />
-                <ValidationMessage For="() => novoProduto.Quantidade" />
-            </div>
+        <Cartao Titulo="Novo produto">
+            <FormProduto OnProdutoCadastrado="AdicionarProduto" />
+        </Cartao>
+    </div>
 
-            <div>
-                <button type="submit" class="btn btn-primary mt-3">Adicionar Produtos</button>
-            </div>
-        </EditForm>
+    <div class="col-md-8">
+        <TabelaProdutos Produtos="produtos" />
+        @if (produtos.Count == 0)
+        {
+            <Aviso />
+        }
     </div>
 </div>
 
-<div class="col-md-8">
-    <h4>Produtos cadastrados</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Quantidade</th>
-            </tr>
-        </thead>
-        <tbody>
-    @if (produtos.Count == 0)
-    {
-        <Aviso/>
-    }
-    else
-    {
-        @foreach (var p in produtos)
-        {
-            <tr>
-                <td>@p.Nome</td>
-                <td>R$ @p.Preco</td>
-                <td>@p.Quantidade un</td>
-            </tr>
-
-        }
-    }
-
-            </tbody>
-        </table>
-</div>
-
 @code {
-    private Produto novoProduto = new();
     private List<Produto> produtos = new();
 
-    private void AdicionarProdutos()
+    private void AdicionarProduto(Produto produto)
     {
-        produtos.Add(novoProduto);
-        novoProduto = new();
-        
+        produtos.Add(produto);
     }
 }
