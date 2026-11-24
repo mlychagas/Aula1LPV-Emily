@@ -1,5 +1,8 @@
-﻿@using AulaApp1.Components.Models
-@page "/produtos"
+﻿@page "/produtos"
+@using AulaApp1.Components.Models
+@using AulaApp1.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<Contexto> DbFactory
 
 <h2>Produtos</h2>
 <div class="row">
@@ -10,7 +13,7 @@
     </div>
 
     <div class="col-md-8">
-        <TabelaProdutos Produtos="produtos" />
+        <TabelaProdutos Produtos="produtos" OnExcluir="ExcluirProduto" />
         @if (produtos.Count == 0)
         {
             <Aviso />
@@ -21,8 +24,30 @@
 @code {
     private List<Produto> produtos = new();
 
-    private void AdicionarProduto(Produto produto)
+    protected override async Task OnInitializedAsync()
     {
-        produtos.Add(produto);
+        await CarregarProdutos();
+    }
+
+    private async Task CarregarProdutos()
+    {
+        using var db = await DbFactory.CreateDbContextAsync();
+        produtos = await db.Produtos.OrderBy(p => p.Nome).ToListAsync();
+    }
+
+    private async Task AdicionarProduto(Produto produto)
+    {
+        using var db = await DbFactory.CreateDbContextAsync();
+        db.Produtos.Add(produto);
+        await db.SaveChangesAsync();   
+        await CarregarProdutos();
+    }
+
+    private async Task ExcluirProduto(Produto produto)
+    {
+        using var db = await DbFactory.CreateDbContextAsync();
+        db.Produtos.Remove(produto);
+        await db.SaveChangesAsync();
+        await CarregarProdutos();
     }
 }

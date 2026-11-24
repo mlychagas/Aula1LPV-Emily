@@ -3,9 +3,12 @@ namespace AulaApp1.Components.Models
 {
     public class Produto
     {
+        public int ProdutoId { get; set; }
+
         [Required(ErrorMessage = "Informe o nome do produto")]
         [MinLength(3, ErrorMessage = "O nome deve ter pelo menos 3 letras")]
         public string? Nome { get; set; } = "";
+
         [Range(0.01, 1000000, ErrorMessage = "Informe o valor do produto maior que zero")]
         public decimal Preco { get; set; }
 
